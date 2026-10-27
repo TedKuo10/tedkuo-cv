@@ -272,7 +272,14 @@
     var rio = new IntersectionObserver(function (es) {
       es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); rio.unobserve(e.target); } });
     }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
-    targets.forEach(function (el) { rio.observe(el); });
+    // 標題一開始被裁切（面積為 0），偵測不到交會；改偵測它外層容器，再讓標題顯現
+    var hio = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target._h.classList.add("in"); hio.unobserve(e.target); } });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0 });
+    targets.forEach(function (el) {
+      if (el.tagName === "H2" && el.parentElement) { el.parentElement._h = el; hio.observe(el.parentElement); }
+      else rio.observe(el);
+    });
     // 安全網：若數秒後仍未顯現（例如被快速跳轉略過），直接顯示
     setTimeout(function () { targets.forEach(function (el) { if (!el.classList.contains("in")) { var r = el.getBoundingClientRect(); if (r.top < innerHeight) el.classList.add("in"); } }); }, 2500);
   }
