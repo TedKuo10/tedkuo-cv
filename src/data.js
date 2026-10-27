@@ -36,13 +36,27 @@ window.CV = {
         "Team & Stakeholder: Cross-functional Synergy (Product, Dev, Content), Mentoring, SOP Building & KPI Reporting" ] }
     ],
     experience: [
+      { date: "2026 年 5 月 ~ 現在", role: "GEO & AI SEO Professional", org: "Index Asia 亞洲指標",
+        desc: "",
+        bullets: [
+          "以策略規劃為起點，先產出 Topic Cluster 與品牌實體定義，確認內容佈局方向後才決定 AI 的導入切點。",
+          "導入 AI 工作流後，數據分析型內容產製由 22 個工作天縮短至 3 個工作天；講座知識轉譯由 14 個工作天縮短至 1.5 個工作天，使高價值資訊能持續擴散影響力。",
+          "從零建置 GEO 流程：設計 Prompt Panel、定義 Citation Rate 與 AI SOV 等指標，並導入段落級可擷取性與實體一致性的內容規範。",
+          "將 ChatGPT、Google AI Overviews 等引用表現納入內容團隊的例行檢測與迭代循環。" ] },
+      { date: "2026 年 4 月 ~ 2026 年 6 月", role: "Art & Culture GEO Strategy Consultant", org: "長流美術館 CHANLIU ART MUSEUM",
+        desc: "",
+        bullets: [
+          "協助導入搜尋優化流程與 GEO 策略架構，從競品引用分析出發，界定可競爭的問題集與內容缺口。",
+          "規劃 GEO 量測基準：建立固定 Prompt Panel，定義 Citation Rate、AI SOV 與 Entity Accuracy（AI 是否正確描述館所定位與典藏脈絡）。",
+          "將「被 AI 引用」轉譯為館方實際目標——展覽曝光、觀展決策路徑，以及典藏與學術權威性的建立。",
+          "建置語意結構化與 Schema 標記等技術基礎，並交付可由館方內部持續維運的流程。" ] },
       { date: "2022 年 5 月 ~ 2025 年 12 月", role: "SEO Manager", org: "亞太滿譽科技有限公司 (FameEX)",
         desc: "主導全球前 50 大 FameEX 加密貨幣交易所的 SEO 增長策略，統籌技術、內容與多語系優化專案，成功在競爭激烈的 Fintech 市場建立品牌權威。",
         bullets: [
           "績效突破：制定並執行全方位 SEO 增長駭客策略，於一年內實現品牌能見度 (Brand Visibility) 成長 773%，大幅超越預期目標。",
           "技術優化：主導平台技術 SEO 架構重整，優化核心網頁指標與多語系 (Hreflang) 配置，顯著提升全球搜索引擎抓取效率與自然曝光。",
           "跨部門協作：擔任產品、開發與內容團隊間的 SEO 顧問，將 SEO 標準導入產品開發流程，確保新功能上線即具備搜尋優勢，並建立數據導向的內容行銷。" ] },
-      { date: "2024 年 9 月 ~ 2025 年 8 月", role: "In-Market SEO Specialist / Global OTA 專案", org: "In Marketing We Trust",
+      { date: "2024 年 9 月 ~ 2026 年 9 月", role: "In-Market SEO Specialist / Global OTA 專案", org: "In Marketing We Trust",
         desc: "參與全球線上旅行社（OTA）亞太區擴張專案，主導台灣市場 SEO 策略規劃與執行，成功提升自然搜尋曝光與用戶獲取成效。",
         bullets: [
           "實驗期間優化目標頁面類型，平均排名提升 5.64 位，點擊率成長 44.23%",
@@ -129,13 +143,27 @@ window.CV = {
     verified: "STRATEGIC IMPACT VERIFIED",
     competencies: null, // 與中文版相同（原文即英文）
     experience: [
+  { date: "MAY 2026 ~ PRESENT", role: "GEO & AI SEO Professional", org: "Index Asia",
+    desc: "",
+    bullets: [
+      "Set content direction first: topic cluster blueprint and brand entity definitions, then mapped where AI belonged in the workflow.",
+      "Cut data-driven content production from 22 working days to 3; post-seminar knowledge translation from 14 to 1.5.",
+      "Built the GEO practice from scratch — fixed prompt panel, Citation Rate and AI Share of Voice as tracked KPIs, content standards for passage-level extractability and entity consistency.",
+      "Added ChatGPT and Google AI Overviews citation checks to the content team's routine audit cycle." ] },
+  { date: "APRIL 2026 ~ JUNE 2026", role: "Art & Culture GEO Strategy Consultant", org: "CHANLIU Art Museum",
+    desc: "",
+    bullets: [
+      "Introduced search optimization workflow and GEO strategy framework, starting from competitive citation landscape analysis to identify winnable query sets.",
+      "Set the GEO measurement baseline: fixed prompt panel, Citation Rate, AI Share of Voice, Entity Accuracy.",
+      "Tied AI citations to what the museum values — exhibition reach, visitor decision paths, scholarly authority.",
+      "Built semantic structuring and schema markup foundations; handed over a workflow the in-house team maintains independently." ] },
   { date: "MAY 2022 ~ DEC 2025", role: "SEO Manager", org: "Asia Pacific FameEX Technology Co., Ltd. (FameEX)",
     desc: "Led the SEO growth strategy for FameEX, a top 50 global cryptocurrency exchange, orchestrating technical, content, and multilingual optimization projects to successfully establish brand authority in the highly competitive Fintech market.",
     bullets: [
       "Performance Breakthrough: Formulated and executed a comprehensive SEO growth hacking strategy, achieving a 773% growth in brand visibility within one year, significantly exceeding expectations.",
       "Technical Optimization: Led the restructuring of the platform's technical SEO architecture, optimizing Core Web Vitals and Hreflang configurations to markedly improve global search engine crawling efficiency and organic exposure.",
       "Cross-functional Collaboration: Served as an SEO consultant across product, development, and content teams, integrating SEO standards into the product development lifecycle to ensure new features possess search advantages upon launch while establishing data-driven content marketing." ] },
-  { date: "SEPTEMBER 2024 ~ AUGUST 2025", role: "In-Market SEO Specialist / Global OTA Project", org: "In Marketing We Trust",
+  { date: "SEPTEMBER 2024 ~ SEPTEMBER 2026", role: "In-Market SEO Specialist / Global OTA Project", org: "In Marketing We Trust",
     desc: "Joined a global online travel agency's APAC expansion project, leading SEO planning and execution for the Taiwan market and improving organic exposure and user acquisition.",
     bullets: [
       "Across the test period, optimized target page types improved average ranking by 5.64 positions and CTR by 44.23%",
