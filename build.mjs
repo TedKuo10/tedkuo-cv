@@ -60,7 +60,7 @@ function build(lang) {
       j.bullets && j.bullets.length ? `<ul>${j.bullets.map((b) => `<li>${lead(b, lang)}</li>`).join("")}</ul>` : "",
       j.talks ? `<ul class="talks">${j.talks.map((k) => `<li><a href="${esc(k.url)}" target="_blank" rel="noopener">${esc(k.title)}</a><p>${esc(k.text)}</p></li>`).join("")}</ul>` : ""
     ].join("");
-    return `<li class="job" id="job-${i}"><h3><button class="acc-btn" type="button" aria-expanded="true" aria-controls="job-panel-${i}"><span class="job-date">${esc(titleCaseDate(j.date, lang))}</span><span class="job-main"><span class="job-role">${esc(j.role)}</span><span class="job-org">${esc(j.org)}</span></span>${chev}</button></h3><div class="acc-panel" id="job-panel-${i}"><div class="acc-inner">${body}</div></div></li>`;
+    return `<li class="job" id="job-${i}"><h3><button class="acc-btn" type="button" aria-expanded="true" aria-controls="job-panel-${i}"><span class="job-date">${esc(titleCaseDate(j.date, lang))}</span><span class="job-main"><span class="job-role">${esc(j.role)}</span><span class="job-org">${esc(j.org)}</span><span class="crawl" aria-hidden="true"><b class="cs" data-s="${esc(t.crawl.s.join("|"))}"></b><b class="ci">[${i + 1}] ${esc(t.crawl.cited)}</b></span></span>${chev}</button></h3><div class="acc-panel" id="job-panel-${i}"><div class="acc-inner">${body}</div></div></li>`;
   }).join("");
 
   // 專案
@@ -72,7 +72,11 @@ function build(lang) {
     return `<li class="proj" id="project-${i}" data-tag="${meta.tag}"${imgs.length ? ` data-peek="${up}assets/img/${imgs[0].f}"` : ""}><h3><button class="acc-btn" type="button" aria-expanded="true" aria-controls="proj-panel-${i}"><span class="proj-main"><span class="proj-title">${esc(p.title)}</span><span class="proj-tag">${esc(t.tags[meta.tag])}</span></span><span class="proj-metric"><b>${esc(mv)}</b><small>${esc(ml)}</small></span>${chev}</button></h3><div class="acc-panel" id="proj-panel-${i}"><div class="acc-inner">${paras(p.intro, lang)}<ul>${p.points.map((x) => `<li>${lead(x, lang)}</li>`).join("")}</ul>${gallery(i)}</div></div></li>`;
   }).join("");
 
-  const life = d.life.map((x, i) => `<li>${UI.lifeImages[i] ? `<figure class="life-img"><img src="${up}assets/img/${UI.lifeImages[i].f}" alt="${esc(UI.lifeImages[i][lang])}" loading="lazy" decoding="async"></figure>` : ""}<h3>${esc(x.title)}</h3><p class="org">${esc(x.org)}</p><p>${esc(x.text)}</p><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(t.visit)}<span class="sr"> (${esc(x.title)})</span></a></li>`).join("");
+  const life = d.life.map((x, i) => {
+    const im = UI.lifeImages[i], r = [-3.2, 2.4, -1.6, 3.1, -2.4][i % 5];
+    return `<li class="pol" style="--r:${r}deg" data-pol><div class="pol-in"><div class="pol-face pol-front">${im ? `<img src="${up}assets/img/${im.f}" alt="${esc(im[lang])}" loading="lazy" decoding="async" draggable="false"${im.fit ? ` class="fit-${im.fit}"` : ""}>` : ""}<span class="pol-title">${esc(x.title)}</span><button class="pol-flip" type="button" aria-label="${esc(t.wall.flip)}: ${esc(x.title)}" aria-pressed="false"><svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><path d="M4 10a6 6 0 0 1 10.2-4.3L16 4v4.5h-4.5l1.7-1.7A4 4 0 1 0 14 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div><div class="pol-face pol-back"><h3>${esc(x.title)}</h3><p class="org">${esc(x.org)}</p><p>${esc(x.text)}</p><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(t.wall.open)}<span class="sr"> (${esc(x.title)})</span></a><button class="pol-flip pol-unflip" type="button" aria-label="${esc(t.wall.back)}: ${esc(x.title)}"><svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><path d="M4 10a6 6 0 0 1 10.2-4.3L16 4v4.5h-4.5l1.7-1.7A4 4 0 1 0 14 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div></li>`;
+  }).join("");
+  const lifeSub = [...t.lifeSub].map((ch) => (ch === " " ? " " : `<span class="lc">${esc(ch)}</span>`)).join("");
 
   const ld = {
     "@context": "https://schema.org", "@type": "Person", name: "Ted Kuo", alternateName: "郭泰宏",
@@ -176,7 +180,8 @@ function build(lang) {
 <section class="sec alt" id="experience">
   <div class="sec-in">
     <div class="sec-head"><h2>${esc(t.sections.experience)}</h2><button class="linklike" type="button" data-toggle-all="#experience" data-expand="${esc(t.expandAll)}" data-collapse="${esc(t.collapseAll)}">${esc(t.collapseAll)}</button></div>
-    <ol class="jobs">${jobs}</ol>
+    <p class="crawl-legend"><b>${esc(t.crawl.bot)}</b>${esc(t.crawl.legend)}</p>
+    <ol class="jobs">${jobs}<li class="bot" aria-hidden="true"><i></i><em>${esc(t.crawl.bot)}</em></li></ol>
     <div class="edu">
       <div><h3>${esc(t.education)}</h3><p><strong>${esc(t.educationItem.school)}</strong></p><p>${esc(t.educationItem.detail)}</p></div>
       <div><h3>${esc(t.languages)}</h3>${t.languageItems.map((x) => `<p><strong>${esc(x[0])}</strong> ${esc(x[1])}</p>`).join("")}</div>
@@ -193,7 +198,7 @@ function build(lang) {
 </section>
 
 <section class="sec alt" id="life">
-  <div class="sec-in"><h2>${esc(t.sections.life)}</h2><ul class="life">${life}</ul></div>
+  <div class="sec-in"><h2>${esc(t.sections.life)}</h2><p class="life-sub" data-lit aria-label="${esc(t.lifeSub)}"><span aria-hidden="true">${lifeSub}</span></p><p class="wall-hint" data-fine="${esc(t.wall.hintFine)}" data-touch="${esc(t.wall.hintTouch)}">${esc(t.wall.hintFine)}</p><ul class="life wall" data-wall>${life}</ul></div>
 </section>
 
 <section class="sec connect" id="connect">

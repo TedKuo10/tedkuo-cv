@@ -32,7 +32,10 @@ window.CV_UI = {
     filterLabel: "依產業篩選專案", filterAll: "全部",
     tags: { travel: "旅遊", fintech: "金融", education: "教育", b2b: "B2B 與醫材", startup: "新創" },
     visit: "前往網站", footer: "Ted Kuo，台北", email: "寄信", back: "回到頂端", backTop: "回到頁面頂端",
-    lb: { close: "關閉", prev: "上一張", next: "下一張", label: "圖片檢視" }, zoom: "點擊放大"
+    lb: { close: "關閉", prev: "上一張", next: "下一張", label: "圖片檢視" }, zoom: "點擊放大",
+    crawl: { legend: "正在爬行這份職涯。時間軸上的狀態標籤是示意動畫，模擬搜尋引擎爬行與 AI 引用。", bot: "Googlebot", s: ["已探索", "已檢索", "已編入索引"], cited: "被 AI 引用" },
+    lifeSub: "工作之外，我相信的事與一直在做的事",
+    wall: { hintFine: "點一下翻面，也可以拖曳照片", hintTouch: "點一下翻面，左右滑動看更多", flip: "翻面", back: "翻回正面", open: "前往網站" }
   },
   en: {
     htmlLang: "en", locale: "en_US", path: "/en/",
@@ -65,7 +68,10 @@ window.CV_UI = {
     filterLabel: "Filter projects by industry", filterAll: "All",
     tags: { travel: "Travel", fintech: "Fintech", education: "Education", b2b: "B2B and medical", startup: "Startup" },
     visit: "Visit website", footer: "Ted Kuo, Taipei", email: "Send email", back: "Back to top", backTop: "Back to top of page",
-    lb: { close: "Close", prev: "Previous image", next: "Next image", label: "Image viewer" }, zoom: "Click to enlarge"
+    lb: { close: "Close", prev: "Previous image", next: "Next image", label: "Image viewer" }, zoom: "Click to enlarge",
+    crawl: { legend: "is crawling this career. The status tags on this timeline are an animated illustration of search engine crawling and AI citation.", bot: "Googlebot", s: ["Discovered", "Crawled", "Indexed"], cited: "Cited by AI" },
+    lifeSub: "Beyond work: what I believe in, and what I keep doing.",
+    wall: { hintFine: "Click a photo to flip it, or drag to rearrange", hintTouch: "Tap to flip, swipe for more", flip: "Flip", back: "Flip back", open: "Visit website" }
   },
   // 圖片放在 assets/img/。專案順序需與 data.js 的 projects 相同；截圖已裁掉含客戶網址的表格。
   projectImages: [
@@ -86,7 +92,7 @@ window.CV_UI = {
     { f: "life1-sow.webp", zh: "志工穿著防水連身褲在濕地裡手作整地", en: "Volunteers in waders restoring a wetland by hand" },
     { f: "life2-carnegie.webp", zh: "卡內基訓練課程的團體合照（2019.08.17）", en: "Group photo at a Dale Carnegie Training course (2019.08.17)" },
     { f: "life3-ark.webp", zh: "在台北車站旁與方舟志工夥伴合影", en: "With fellow Ark volunteers outside Taipei Main Station" },
-    { f: "life4-ironman.webp", zh: "iT 邦幫忙鐵人賽主視覺：喚醒心中最強大的鐵人", en: "iThome Ironman Challenge banner" }
+    { f: "life4-ironman.webp", fit: "contain", zh: "iT 邦幫忙鐵人賽主視覺：喚醒心中最強大的鐵人", en: "iThome Ironman Challenge banner" }
   ],
   // 專案順序需與 data.js 的 projects 相同
   projectMeta: [

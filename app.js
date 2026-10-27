@@ -166,25 +166,41 @@
   window.addEventListener("hashchange", function () { reveal(location.hash, true); });
   if (location.hash) reveal(location.hash, false);
 
-  /* ---- 數字計數 ---- */
+  /* ---- 數字計數：依序、約 2 秒、先慢後快再慢，最後一格閃光；每次捲回來重播 ---- */
   var nums = $$(".num[data-to]");
   function fmt(n, s) { return Math.round(n).toLocaleString("en-US") + s; }
-  function countUp(el) {
-    var to = +el.getAttribute("data-to"), s = el.getAttribute("data-suffix") || "", t0 = null, d = 1200;
-    function step(ts) {
-      if (t0 === null) t0 = ts;
-      var p = Math.min(1, (ts - t0) / d), k = 1 - Math.pow(1 - p, 3);
-      el.textContent = fmt(to * k, s);
-      if (p < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
+  function ease(p) { return p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; }
+  var runId = 0;
+  function runCounts(startDelay) {
+    var id = ++runId;
+    nums.forEach(function (el, i) {
+      var to = +el.getAttribute("data-to"), s = el.getAttribute("data-suffix") || "", d = 2000, t0 = null;
+      el.classList.remove("flash"); el.textContent = fmt(0, s);
+      setTimeout(function () {
+        if (id !== runId) return;
+        function step(ts) {
+          if (id !== runId) return;
+          if (t0 === null) t0 = ts;
+          var p = Math.min(1, (ts - t0) / d);
+          el.textContent = fmt(to * ease(p), s);
+          if (p < 1) requestAnimationFrame(step);
+          else { el.classList.add("flash"); }
+        }
+        requestAnimationFrame(step);
+      }, startDelay + i * 220);
+    });
   }
-  if (nums.length && !reduce && "IntersectionObserver" in window) {
+  var mwrap = $(".metrics");
+  if (nums.length && mwrap && !reduce && "IntersectionObserver" in window) {
     nums.forEach(function (n) { n.textContent = fmt(0, n.getAttribute("data-suffix") || ""); });
+    var armed = true, first = true;
     var cio = new IntersectionObserver(function (es) {
-      es.forEach(function (e) { if (e.isIntersecting) { countUp(e.target); cio.unobserve(e.target); } });
-    }, { threshold: 0.6 });
-    nums.forEach(function (n) { cio.observe(n); });
+      es.forEach(function (e) {
+        if (e.isIntersecting && armed) { armed = false; runCounts(first ? 900 : 150); first = false; }
+        else if (!e.isIntersecting && e.intersectionRatio === 0) { armed = true; }
+      });
+    }, { threshold: [0, 0.6] });
+    cio.observe(mwrap);
   }
 
   /* ---- AI 答案示意：逐字出現，引用編號與來源互相連動 ---- */
@@ -250,7 +266,7 @@
   /* ================= v2 ================= */
   /* ---- 捲動顯現 ---- */
   if (!reduce && "IntersectionObserver" in window) {
-    var targets = $$(".sec h2, .tabs, .chips, .job, .proj, .life li, .edu > div, .connect .lead, .actions");
+    var targets = $$(".sec h2, .tabs, .chips, .job, .proj, .edu > div, .connect .lead, .actions");
     targets.forEach(function (el) { el.setAttribute("data-reveal", ""); });
     document.documentElement.classList.add("rv");
     var rio = new IntersectionObserver(function (es) {
@@ -275,7 +291,17 @@
       var r = jobsEl.getBoundingClientRect(), mid = innerHeight * 0.55;
       var p = Math.min(1, Math.max(0, (mid - r.top) / Math.max(1, r.height)));
       jobsEl.style.setProperty("--p", p.toFixed(4));
-      jobEls.forEach(function (j) { j.classList.toggle("seen", j.getBoundingClientRect().top < mid); });
+      jobsEl.classList.toggle("on", r.top < mid && r.bottom > 0);
+      jobEls.forEach(function (j) {
+        var top = j.getBoundingClientRect().top, st = top < mid - 150 ? 3 : top < mid - 70 ? 2 : top < mid ? 1 : 0;
+        j.classList.toggle("seen", top < mid);
+        if (reduce) st = 3;
+        if (+(j.getAttribute("data-st") || 0) !== st) {
+          j.setAttribute("data-st", st);
+          var cs = $(".cs", j); if (cs) cs.textContent = st ? cs.getAttribute("data-s").split("|")[st - 1] : "";
+          if (st === 3 && !j._cited) { j._cited = true; setTimeout(function () { j.classList.add("cited"); }, reduce ? 0 : 650); }
+        }
+      });
     }
   }
   window.addEventListener("scroll", function () { if (!tk) { tk = true; requestAnimationFrame(frame); } }, { passive: true });
@@ -361,6 +387,110 @@
       if (group.length < 2) return;
       if (e.key === "ArrowLeft") { e.preventDefault(); show(gi - 1); }
       if (e.key === "ArrowRight") { e.preventDefault(); show(gi + 1); }
+    });
+  }
+
+  /* ================= v3 ================= */
+  /* ---- 核心職能：游標聚光 ---- */
+  if (fine && !reduce) {
+    $$(".tabpanels dl > div").forEach(function (c) {
+      c.addEventListener("pointermove", function (e) {
+        var r = c.getBoundingClientRect();
+        c.style.setProperty("--mx", (e.clientX - r.left) + "px"); c.style.setProperty("--my", (e.clientY - r.top) + "px");
+      });
+    });
+  }
+
+  /* ---- 停留一下：已展開、位在畫面中央、停止操作 3 秒後，輕輕呼吸一次（每筆最多一次） ---- */
+  if (!reduce) {
+    var idleT = null;
+    function breatheOnce() {
+      var mid = innerHeight / 2;
+      $$(".job, .proj").forEach(function (it) {
+        if (it._breathed || it.hidden || !isOpen(it)) return;
+        var r = it.getBoundingClientRect();
+        if (r.top < mid && r.bottom > mid && r.height > 60) {
+          it._breathed = true; it.classList.add("breathe");
+          setTimeout(function () { it.classList.remove("breathe"); }, 1500);
+        }
+      });
+    }
+    function rearm() { clearTimeout(idleT); idleT = setTimeout(breatheOnce, 3000); }
+    ["scroll", "pointerdown", "keydown", "wheel"].forEach(function (ev) { window.addEventListener(ev, rearm, { passive: true }); });
+    rearm();
+  }
+
+  /* ---- 公益與分享：副標逐字亮起 ---- */
+  var lit = $("[data-lit]");
+  if (lit) {
+    var lcs = $$(".lc", lit);
+    if (reduce || !("IntersectionObserver" in window)) { lcs.forEach(function (c) { c.classList.add("on"); }); }
+    else {
+      var litTk = false;
+      var litFrame = function () {
+        litTk = false;
+        var r = lit.getBoundingClientRect();
+        var p = (innerHeight * 0.92 - r.top) / (innerHeight * 0.42);
+        var n = Math.round(Math.min(1, Math.max(0, p)) * lcs.length);
+        lcs.forEach(function (c, i) { c.classList.toggle("on", i < n); });
+      };
+      window.addEventListener("scroll", function () { if (!litTk) { litTk = true; requestAnimationFrame(litFrame); } }, { passive: true });
+      litFrame();
+    }
+  }
+
+  /* ---- 公益與分享：拍立得牆（點擊翻面、拖曳移動、依序掉落） ---- */
+  var pols = $$("[data-pol]");
+  if (pols.length) {
+    var hint = $(".wall-hint"); if (hint && !fine) hint.textContent = hint.getAttribute("data-touch");
+    if (!reduce && "IntersectionObserver" in window) {
+      var pio = new IntersectionObserver(function (es) {
+        es.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          var i = pols.indexOf(e.target);
+          setTimeout(function () { e.target.classList.add("in"); }, (fine ? i : 0) * 140);
+          pio.unobserve(e.target);
+        });
+      }, { threshold: 0.15 });
+      pols.forEach(function (p) { pio.observe(p); });
+      setTimeout(function () { pols.forEach(function (p) { if (!p.classList.contains("in")) p.classList.add("in"); }); }, 6000);
+    } else { pols.forEach(function (p) { p.classList.add("in"); }); }
+    var zTop = 10;
+    pols.forEach(function (pol) {
+      var flipBtn = $(".pol-flip", pol), front = $(".pol-front", pol), back = $(".pol-back", pol);
+      function setFlip(on) {
+        pol.classList.toggle("flipped", on);
+        flipBtn.setAttribute("aria-pressed", on);
+        back.inert = !on; front.inert = on;
+        if (on && !reduce) { zTop++; pol.style.zIndex = zTop; }
+      }
+      setFlip(false);
+      flipBtn.addEventListener("click", function (e) { e.stopPropagation(); setFlip(!pol.classList.contains("flipped")); });
+      // 背面空白處點一下翻回（連結除外）
+      back.addEventListener("click", function (e) { if (!e.target.closest("a")) setFlip(false); });
+      var unflip = $(".pol-unflip", pol); if (unflip) unflip.addEventListener("click", function (e) { e.stopPropagation(); setFlip(false); });
+      var sx = 0, sy = 0, ox = 0, oy = 0, moved = false, dragging = false, pid = null;
+      front.addEventListener("pointerdown", function (e) {
+        if (e.button !== 0 || e.target.closest(".pol-flip")) return;
+        pid = e.pointerId; sx = e.clientX; sy = e.clientY; moved = false; dragging = true;
+        ox = parseFloat(pol.style.getPropertyValue("--dx")) || 0; oy = parseFloat(pol.style.getPropertyValue("--dy")) || 0;
+        if (fine) { try { front.setPointerCapture(pid); } catch (x) {} }
+      });
+      front.addEventListener("pointermove", function (e) {
+        if (!dragging || !fine || e.pointerId !== pid) return;
+        var dx = e.clientX - sx, dy = e.clientY - sy;
+        if (!moved && Math.abs(dx) + Math.abs(dy) < 6) return;
+        moved = true; pol.classList.add("drag"); zTop++; pol.style.zIndex = zTop;
+        pol.style.setProperty("--dx", (ox + dx) + "px"); pol.style.setProperty("--dy", (oy + dy) + "px");
+      });
+      function endDrag(e) {
+        if (!dragging || e.pointerId !== pid) return;
+        dragging = false; pol.classList.remove("drag"); pol.classList.toggle("top", moved);
+        try { front.releasePointerCapture(pid); } catch (x) {}
+        if (!moved) setFlip(true);
+      }
+      front.addEventListener("pointerup", endDrag);
+      front.addEventListener("pointercancel", function (e) { dragging = false; pol.classList.remove("drag"); });
     });
   }
 })();
